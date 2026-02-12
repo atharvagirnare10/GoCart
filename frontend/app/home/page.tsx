@@ -1,15 +1,18 @@
 "use client";
 
+// ✅ FIX: This line prevents the "Suspense boundary" error
+export const dynamic = "force-dynamic";
+
 import { useEffect, useState } from "react";
 import { getProducts, getCategories } from "@/services/product.service";
 import Link from "next/link";
-import { ArrowRight, Star, Heart, ShoppingBag, Zap, ChevronLeft, ChevronRight } from "lucide-react"; 
-import { useRouter, useSearchParams } from "next/navigation"; 
-import ProductCard from "@/components/ProductCard"; 
-import { useQuery } from "@tanstack/react-query"; 
+import { ArrowRight, Star, Heart, ShoppingBag, Zap, ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import ProductCard from "@/components/ProductCard";
+import { useQuery } from "@tanstack/react-query";
 
 const sliderImages = [
-  "/banner1.png", 
+  "/banner1.png",
   "/banner2.png",
   "/banner3.png",
   "/banner4.png",
@@ -29,15 +32,15 @@ export default function HomePage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // ✅ LOGIC: Agar search nahi hai, to Random Feed dikhao
-  const isRandomFeed = !searchQuery; 
+  // ✅ LOGIC: If no search, show Random Feed
+  const isRandomFeed = !searchQuery;
 
   // ✅ React Query for Products
   const { data, isLoading } = useQuery({
-    queryKey: ['products', selectedCategory, page, searchQuery, isRandomFeed], 
-    // 👇 Yahan humne 'isRandomFeed' pass kiya hai
-    queryFn: () => getProducts(selectedCategory, page, 30, searchQuery, isRandomFeed), 
-    staleTime: 5 * 60 * 1000, 
+    queryKey: ['products', selectedCategory, page, searchQuery, isRandomFeed],
+    // 👇 Passing 'isRandomFeed' here
+    queryFn: () => getProducts(selectedCategory, page, 30, searchQuery, isRandomFeed),
+    staleTime: 5 * 60 * 1000,
   });
 
   const products = data?.products || [];
@@ -53,7 +56,7 @@ export default function HomePage() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    }, 5000); 
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
@@ -64,7 +67,7 @@ export default function HomePage() {
   const handleCategoryChange = (cat: string) => {
     const params = new URLSearchParams();
     if (cat !== "All") params.append("category", cat);
-    params.append("page", "1"); 
+    params.append("page", "1");
     router.push(`/home?${params.toString()}`);
   };
 
@@ -74,7 +77,7 @@ export default function HomePage() {
     if (selectedCategory !== "All") params.append("category", selectedCategory);
     if (searchQuery) params.append("search", searchQuery);
     params.append("page", newPage.toString());
-    
+
     router.push(`/home?${params.toString()}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -88,7 +91,7 @@ export default function HomePage() {
       position: 'relative',
       overflowX: 'hidden'
     }}>
-      
+
       {/* --- BACKGROUND BLOBS --- */}
       <div style={{ position: 'fixed', inset: '0', overflow: 'hidden', pointerEvents: 'none', zIndex: '-10' }}>
         <div className="blob blob-1"></div>
@@ -100,49 +103,49 @@ export default function HomePage() {
       {!searchQuery && (
         <>
           <div className="max-w-[1500px] mx-auto px-4 w-full">
-            
+
             <div className="relative w-full h-[300px] md:h-[500px] overflow-hidden mt-32 mb-10 mx-auto rounded-3xl shadow-2xl group">
-               {/* Slides */}
-               {sliderImages.map((img, index) => (
-                  <div 
+              {/* Slides */}
+              {sliderImages.map((img, index) => (
+                <div
+                  key={index}
+                  className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"}`}
+                >
+                  <img src={img} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
+                </div>
+              ))}
+
+              <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100">
+                <ChevronLeft size={24} />
+              </button>
+              <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100">
+                <ChevronRight size={24} />
+              </button>
+
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {sliderImages.map((_, index) => (
+                  <button
                     key={index}
-                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"}`}
-                  >
-                      <img src={img} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
-                  </div>
-               ))}
-
-               <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100">
-                  <ChevronLeft size={24} />
-               </button>
-               <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100">
-                  <ChevronRight size={24} />
-               </button>
-
-               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                  {sliderImages.map((_, index) => (
-                      <button 
-                        key={index}
-                        onClick={() => setCurrentSlide(index)}
-                        className={`w-2 h-2 rounded-full transition-all ${index === currentSlide ? "bg-white w-6" : "bg-white/50"}`}
-                      />
-                  ))}
-               </div>
+                    onClick={() => setCurrentSlide(index)}
+                    className={`w-2 h-2 rounded-full transition-all ${index === currentSlide ? "bg-white w-6" : "bg-white/50"}`}
+                  />
+                ))}
+              </div>
             </div>
 
             <div className="w-full mb-16">
               <div className="w-full overflow-hidden relative group rounded-2xl bg-white/50 backdrop-blur-sm border border-white shadow-sm p-2">
                 <div className="category-scroll-container">
-                  <button 
-                    onClick={() => handleCategoryChange("All")} 
+                  <button
+                    onClick={() => handleCategoryChange("All")}
                     className={`category-btn ${selectedCategory === "All" ? "active" : ""}`}
                   >
                     All Products
                   </button>
                   {categories.map((cat: any) => (
-                    <button 
-                      key={cat.category_name} 
-                      onClick={() => handleCategoryChange(cat.category_name)} 
+                    <button
+                      key={cat.category_name}
+                      onClick={() => handleCategoryChange(cat.category_name)}
                       className={`category-btn ${selectedCategory === cat.category_name ? "active" : ""}`}
                     >
                       {cat.category_name}
@@ -159,14 +162,14 @@ export default function HomePage() {
 
       {/* --- MAIN CONTENT SECTION --- */}
       <section className="main-section" style={{ marginTop: searchQuery ? '9rem' : '0' }}>
-        
+
         <div className="section-header">
           <div>
             <h2 className="section-title">
               {searchQuery ? (
-                 <>Results for <span className="text-indigo-600">"{searchQuery}"</span></>
+                <>Results for <span className="text-indigo-600">"{searchQuery}"</span></>
               ) : (
-                 <>{selectedCategory === "All" ? "Trending Now" : selectedCategory} <span className="hot-badge">Hot</span></>
+                <>{selectedCategory === "All" ? "Trending Now" : selectedCategory} <span className="hot-badge">Hot</span></>
               )}
             </h2>
           </div>
@@ -191,8 +194,8 @@ export default function HomePage() {
             <h2 className="empty-title">No products found</h2>
             <p className="empty-subtitle">Try adjusting your search or filter to find what you're looking for.</p>
             <button onClick={() => {
-                const params = new URLSearchParams();
-                router.push(`/home`);
+              const params = new URLSearchParams();
+              router.push(`/home`);
             }} className="clear-btn">
               Clear Search & Filters
             </button>
@@ -206,7 +209,7 @@ export default function HomePage() {
             </div>
 
             <div className="pagination-container">
-              <button 
+              <button
                 disabled={page === 1}
                 onClick={() => handlePageChange(Math.max(1, page - 1))}
                 className={`page-btn ${page === 1 ? "disabled" : ""}`}
@@ -214,12 +217,12 @@ export default function HomePage() {
                 <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} />
                 Prev
               </button>
-              
+
               <div className="page-number">
                 {page} <span style={{ color: '#cbd5e1', margin: '0 0.25rem' }}>/</span> {totalPages}
               </div>
 
-              <button 
+              <button
                 disabled={page >= totalPages}
                 onClick={() => handlePageChange(page + 1)}
                 className={`page-btn next ${page >= totalPages ? "disabled" : ""}`}
