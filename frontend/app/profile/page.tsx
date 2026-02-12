@@ -100,7 +100,7 @@ export default function ProfilePage() {
     }
 
     try {
-      let res;
+      let res : any;
       if (editingAddressId) {
         // UPDATE Existing Address
         res = await apiFetch(`/user/address/${editingAddressId}`, {
