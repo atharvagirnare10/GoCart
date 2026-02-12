@@ -9,9 +9,9 @@ import { apiFetch } from "@/services/api";
 export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  const [addresses, setAddresses] = useState<any[]>([]); 
+  const [addresses, setAddresses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   // --- Profile Edit State ---
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -61,7 +61,7 @@ export default function ProfilePage() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     router.push("/login");
-    setTimeout(() => window.location.reload(), 100); 
+    setTimeout(() => window.location.reload(), 100);
   };
 
   // ✅ UPDATE PROFILE
@@ -72,9 +72,9 @@ export default function ProfilePage() {
       const lastName = nameParts.slice(1).join(" ") || "";
 
       const updatedData = await apiFetch("/user/profile", {
-        method: "PUT", 
+        method: "PUT",
         body: JSON.stringify({
-          firstName, 
+          firstName,
           lastName,
           phone: formData.phone
         })
@@ -85,7 +85,7 @@ export default function ProfilePage() {
 
       setUser(newUser);
       localStorage.setItem("user", JSON.stringify(newUser));
-      
+
       setIsEditing(false);
       alert("Profile Updated Successfully!");
     } catch (error: any) {
@@ -95,12 +95,12 @@ export default function ProfilePage() {
 
   // ✅ HANDLE ADDRESS SUBMIT (ADD OR UPDATE)
   const handleAddressSubmit = async () => {
-    if(!newAddr.fullName || !newAddr.addressLine || !newAddr.city || !newAddr.zipCode) {
+    if (!newAddr.fullName || !newAddr.addressLine || !newAddr.city || !newAddr.zipCode) {
       return alert("Please fill all required address fields.");
     }
 
     try {
-      let res;
+      let res: any;
       if (editingAddressId) {
         // UPDATE Existing Address
         res = await apiFetch(`/user/address/${editingAddressId}`, {
@@ -143,7 +143,7 @@ export default function ProfilePage() {
 
   // ✅ DELETE ADDRESS
   const handleDeleteAddress = async (id: string) => {
-    if(!confirm("Are you sure you want to delete this address?")) return;
+    if (!confirm("Are you sure you want to delete this address?")) return;
 
     try {
       await apiFetch(`/user/address/${id}`, { method: "DELETE" });
@@ -199,7 +199,7 @@ export default function ProfilePage() {
       overflowX: 'hidden',
       paddingBottom: '4rem'
     }}>
-      
+
       {/* --- BACKGROUND BLOBS --- */}
       <div style={{ position: 'fixed', inset: '0', overflow: 'hidden', pointerEvents: 'none', zIndex: '0' }}>
         <div className="blob blob-1"></div>
@@ -208,7 +208,7 @@ export default function ProfilePage() {
       </div>
 
       <div style={{ maxWidth: "64rem", margin: "0 auto", padding: "8rem 1.5rem 0", position: 'relative', zIndex: '10' }}>
-        
+
         {/* --- Header Card --- */}
         <div className="glass-card header-card">
           <div className="avatar-box">
@@ -217,10 +217,10 @@ export default function ProfilePage() {
 
           <div style={{ flex: 1 }}>
             {isEditing ? (
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="edit-input title-input"
                 placeholder="Enter full name"
               />
@@ -229,9 +229,9 @@ export default function ProfilePage() {
                 {user.first_name} {user.last_name}
               </h1>
             )}
-            
+
             <p className="user-status">
-              <span className="status-dot"></span> 
+              <span className="status-dot"></span>
               Active Member
             </p>
           </div>
@@ -255,14 +255,14 @@ export default function ProfilePage() {
         </div>
 
         <div className="grid-layout">
-          
+
           {/* --- Left Column: Personal Details & Address --- */}
           <div className="info-column">
             <div className="glass-card p-8">
               <h2 className="card-title mb-6">
                 <User size={20} className="icon-primary" /> Personal Information
               </h2>
-              
+
               <div className="info-list">
                 {/* Email */}
                 <div className="info-item">
@@ -279,10 +279,10 @@ export default function ProfilePage() {
                   <div style={{ flex: 1 }}>
                     <p className="info-label">Phone Number</p>
                     {isEditing ? (
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className="edit-input"
                         placeholder="Add phone number"
                       />
@@ -294,78 +294,78 @@ export default function ProfilePage() {
 
                 {/* --- ADDRESS SECTION --- */}
                 <div style={{ marginTop: '2rem', borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                        <h3 style={{ fontSize: '1.1rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <MapPin size={18} className="icon-primary" /> Saved Addresses
-                        </h3>
-                        <button 
-                            onClick={() => {
-                              if(showAddressForm) resetAddressForm(); 
-                              else setShowAddressForm(true);
-                            }} 
-                            style={{ color: '#4f46e5', fontWeight: '600', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '4px', background: 'none', border: 'none', cursor: 'pointer' }}
-                        >
-                            <Plus size={16} style={{ transform: showAddressForm ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s' }} /> 
-                            {showAddressForm ? "Cancel" : "Add New"}
-                        </button>
-                    </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <MapPin size={18} className="icon-primary" /> Saved Addresses
+                    </h3>
+                    <button
+                      onClick={() => {
+                        if (showAddressForm) resetAddressForm();
+                        else setShowAddressForm(true);
+                      }}
+                      style={{ color: '#4f46e5', fontWeight: '600', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '4px', background: 'none', border: 'none', cursor: 'pointer' }}
+                    >
+                      <Plus size={16} style={{ transform: showAddressForm ? 'rotate(45deg)' : 'none', transition: 'transform 0.2s' }} />
+                      {showAddressForm ? "Cancel" : "Add New"}
+                    </button>
+                  </div>
 
-                    {/* Address Form */}
-                    {showAddressForm && (
-                        <div style={{ background: 'rgba(255,255,255,0.5)', padding: '1rem', borderRadius: '1rem', marginBottom: '1rem', border: '1px solid #e2e8f0' }}>
-                            <h4 style={{fontSize: '0.9rem', fontWeight: '700', marginBottom: '0.5rem', color: '#475569'}}>
-                              {editingAddressId ? "Edit Address" : "New Address"}
-                            </h4>
-                            <input className="edit-input mb-2" placeholder="Full Name" value={newAddr.fullName} onChange={e=>setNewAddr({...newAddr, fullName: e.target.value})} style={{ marginBottom: '0.5rem' }} />
-                            <input className="edit-input mb-2" placeholder="Address Line" value={newAddr.addressLine} onChange={e=>setNewAddr({...newAddr, addressLine: e.target.value})} style={{ marginBottom: '0.5rem' }} />
-                            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                <input className="edit-input" placeholder="City" value={newAddr.city} onChange={e=>setNewAddr({...newAddr, city: e.target.value})} />
-                                <input className="edit-input" placeholder="Zip Code" value={newAddr.zipCode} onChange={e=>setNewAddr({...newAddr, zipCode: e.target.value})} />
-                            </div>
-                            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-                                <input className="edit-input" placeholder="State" value={newAddr.state} onChange={e=>setNewAddr({...newAddr, state: e.target.value})} />
-                                <input className="edit-input" placeholder="Country" value={newAddr.country} onChange={e=>setNewAddr({...newAddr, country: e.target.value})} />
-                            </div>
-                            <button onClick={handleAddressSubmit} className="action-btn save-btn" style={{ width: '100%', justifyContent: 'center' }}>
-                                {editingAddressId ? "Update Address" : "Save Address"}
+                  {/* Address Form */}
+                  {showAddressForm && (
+                    <div style={{ background: 'rgba(255,255,255,0.5)', padding: '1rem', borderRadius: '1rem', marginBottom: '1rem', border: '1px solid #e2e8f0' }}>
+                      <h4 style={{ fontSize: '0.9rem', fontWeight: '700', marginBottom: '0.5rem', color: '#475569' }}>
+                        {editingAddressId ? "Edit Address" : "New Address"}
+                      </h4>
+                      <input className="edit-input mb-2" placeholder="Full Name" value={newAddr.fullName} onChange={e => setNewAddr({ ...newAddr, fullName: e.target.value })} style={{ marginBottom: '0.5rem' }} />
+                      <input className="edit-input mb-2" placeholder="Address Line" value={newAddr.addressLine} onChange={e => setNewAddr({ ...newAddr, addressLine: e.target.value })} style={{ marginBottom: '0.5rem' }} />
+                      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                        <input className="edit-input" placeholder="City" value={newAddr.city} onChange={e => setNewAddr({ ...newAddr, city: e.target.value })} />
+                        <input className="edit-input" placeholder="Zip Code" value={newAddr.zipCode} onChange={e => setNewAddr({ ...newAddr, zipCode: e.target.value })} />
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+                        <input className="edit-input" placeholder="State" value={newAddr.state} onChange={e => setNewAddr({ ...newAddr, state: e.target.value })} />
+                        <input className="edit-input" placeholder="Country" value={newAddr.country} onChange={e => setNewAddr({ ...newAddr, country: e.target.value })} />
+                      </div>
+                      <button onClick={handleAddressSubmit} className="action-btn save-btn" style={{ width: '100%', justifyContent: 'center' }}>
+                        {editingAddressId ? "Update Address" : "Save Address"}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Address List */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {addresses.length === 0 ? (
+                      <p style={{ color: '#94a3b8', fontSize: '0.9rem', fontStyle: 'italic' }}>No addresses saved yet.</p>
+                    ) : (
+                      addresses.map((addr) => (
+                        <div key={addr.id} className="group" style={{ padding: '1rem', background: 'white', borderRadius: '0.75rem', border: '1px solid #e2e8f0', fontSize: '0.9rem', position: 'relative' }}>
+                          <div style={{ paddingRight: '4rem' }}>
+                            <p style={{ fontWeight: '700', marginBottom: '2px' }}>{addr.full_name}</p>
+                            <p style={{ color: '#475569', marginBottom: '2px' }}>{addr.address_line}</p>
+                            <p style={{ color: '#64748b', fontSize: '0.85rem' }}>{addr.city}, {addr.state} - {addr.zip_code}</p>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div style={{ position: 'absolute', top: '1rem', right: '1rem', display: 'flex', gap: '0.5rem' }}>
+                            <button
+                              onClick={() => handleEditAddress(addr)}
+                              title="Edit"
+                              style={{ padding: '4px', color: '#4f46e5', background: '#e0e7ff', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+                            >
+                              <Pencil size={14} />
                             </button>
+                            <button
+                              onClick={() => handleDeleteAddress(addr.id)}
+                              title="Delete"
+                              style={{ padding: '4px', color: '#dc2626', background: '#fee2e2', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
                         </div>
+                      ))
                     )}
-
-                    {/* Address List */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        {addresses.length === 0 ? (
-                            <p style={{ color: '#94a3b8', fontSize: '0.9rem', fontStyle: 'italic' }}>No addresses saved yet.</p>
-                        ) : (
-                            addresses.map((addr) => (
-                                <div key={addr.id} className="group" style={{ padding: '1rem', background: 'white', borderRadius: '0.75rem', border: '1px solid #e2e8f0', fontSize: '0.9rem', position: 'relative' }}>
-                                    <div style={{ paddingRight: '4rem' }}>
-                                      <p style={{ fontWeight: '700', marginBottom: '2px' }}>{addr.full_name}</p>
-                                      <p style={{ color: '#475569', marginBottom: '2px' }}>{addr.address_line}</p>
-                                      <p style={{ color: '#64748b', fontSize: '0.85rem' }}>{addr.city}, {addr.state} - {addr.zip_code}</p>
-                                    </div>
-
-                                    {/* Action Buttons */}
-                                    <div style={{ position: 'absolute', top: '1rem', right: '1rem', display: 'flex', gap: '0.5rem' }}>
-                                        <button 
-                                          onClick={() => handleEditAddress(addr)}
-                                          title="Edit"
-                                          style={{ padding: '4px', color: '#4f46e5', background: '#e0e7ff', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
-                                        >
-                                          <Pencil size={14} />
-                                        </button>
-                                        <button 
-                                          onClick={() => handleDeleteAddress(addr.id)}
-                                          title="Delete"
-                                          style={{ padding: '4px', color: '#dc2626', background: '#fee2e2', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
-                                        >
-                                          <Trash2 size={14} />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
+                  </div>
                 </div>
 
               </div>
@@ -374,10 +374,10 @@ export default function ProfilePage() {
 
           {/* --- Right Column: Quick Actions (Same) --- */}
           <div className="action-column">
-            
+
             <div className="glass-card p-6">
               <h3 className="card-title">Account Actions</h3>
-              
+
               <Link href="/orders" className="quick-link">
                 <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                   <Package size={20} />
