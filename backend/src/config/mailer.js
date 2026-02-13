@@ -1,11 +1,14 @@
 import nodemailer from "nodemailer";
 import "dotenv/config";
 
+// ✅ UPDATED: Explicit Host & Port Configuration (Render/Production ke liye best)
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com", // Gmail Host
+  port: 465,              // Secure SSL Port
+  secure: true,           // Security ON
   auth: {
     user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS, // App Password yahan use hoga
+    pass: process.env.MAIL_PASS, // App Password
   },
 });
 
@@ -23,10 +26,10 @@ export async function sendOTPEmail(email, otp) {
         </div>
       `,
     });
-    console.log("Email sent: ", info.messageId);
+    console.log("✅ Email sent: ", info.messageId);
     return true;
   } catch (error) {
-    console.error("Email Error:", error);
+    console.error("❌ Email Error (Check logs):", error);
     return false; // Error return karega taaki pata chale
   }
 }
