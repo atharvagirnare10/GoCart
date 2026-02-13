@@ -4,7 +4,7 @@
 const LOCAL_URL = "http://127.0.0.1:5000/api";
 
 // Apna Current Ngrok URL yahan daal (Har baar change hota hai agar free wala band ho jaye)
-const NGROK_URL = "https://marquis-subabsolute-toughly.ngrok-free.dev/api"; 
+const NGROK_URL = "https://gocart-0r8s.onrender.com/api"; 
 
 // 👇 SWITCH: True = Dost/Mobile, False = Local Development
 const USE_NGROK = true; 
