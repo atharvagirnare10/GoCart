@@ -39,9 +39,11 @@ export default function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      router.push(`/home?search=${encodeURIComponent(searchTerm)}`);
+      // ✅ CHANGE: '/home' ko '/' kar diya
+      router.push(`/?search=${encodeURIComponent(searchTerm)}`);
     } else {
-      router.push(`/home`);
+      // ✅ CHANGE: '/home' ko '/' kar diya
+      router.push(`/`);
     }
   };
 
@@ -69,7 +71,7 @@ export default function Navbar() {
           {/* Desktop Nav Links with Hover Underline */}
           <div className="hidden lg:flex items-center gap-8 text-sm font-bold text-slate-500">
             {[
-              { name: 'Home', path: '/home' },
+              { name: 'Home', path: '/' }, // ✅ CHANGE: '/home' -> '/'
               { name: 'About', path: '/about' },
               { name: 'Contact', path: '/about' } // Kept Contact pointing to /about
             ].map((link) => (

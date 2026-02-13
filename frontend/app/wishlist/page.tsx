@@ -94,7 +94,8 @@ export default function WishlistPage() {
               <Heart size={48} fill="currentColor" />
            </div>
            <h1 className="text-3xl font-bold text-slate-900 mb-3">Your Wishlist is empty</h1>
-           <Link href="/home">
+           {/* ✅ CHANGE: '/home' -> '/' */}
+           <Link href="/">
              <button className="bg-slate-900 text-white rounded-xl px-8 py-3 font-bold shadow-lg mt-4 flex items-center gap-2">
                Start Shopping <ArrowRight size={18} />
              </button>

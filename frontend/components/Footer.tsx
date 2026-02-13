@@ -32,7 +32,8 @@ export default function Footer() {
         <div>
           <h5 className="font-bold text-slate-900 mb-6">Shop</h5>
           <ul className="space-y-4 text-slate-500 text-sm">
-            <li><Link href="/home" className="hover:text-indigo-600 transition-colors">Home</Link></li>
+            {/* ✅ CHANGE: '/home' -> '/' */}
+            <li><Link href="/" className="hover:text-indigo-600 transition-colors">Home</Link></li>
             <li><Link href="/wishlist" className="hover:text-indigo-600 transition-colors">My Wishlist</Link></li>
           </ul>
         </div>

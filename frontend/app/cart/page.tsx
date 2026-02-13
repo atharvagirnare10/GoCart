@@ -79,7 +79,8 @@ export default function CartPage() {
                   Sign In
                 </button>
               </Link>
-              <Link href="/home" className="block">
+              {/* ✅ CHANGE: '/home' -> '/' */}
+              <Link href="/" className="block">
                 <button className="w-full bg-white text-slate-900 border-2 border-slate-100 hover:border-slate-300 py-3 rounded-xl font-bold transition-all">
                   Continue Shopping
                 </button>
@@ -101,7 +102,8 @@ export default function CartPage() {
           </div>
           <h1 className="text-3xl font-bold text-slate-900 mb-3">Your Cart is empty</h1>
           <p className="text-slate-500 mb-8 max-w-md">Looks like you haven't added anything to your cart yet. Explore our products and find something you love.</p>
-          <Link href="/home">
+          {/* ✅ CHANGE: '/home' -> '/' */}
+          <Link href="/">
              <button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-8 py-3 font-bold shadow-lg shadow-indigo-500/30 transition-all flex items-center gap-2">
                Start Shopping <ArrowRight size={18} />
              </button>
@@ -151,20 +153,20 @@ export default function CartPage() {
                    <div className="flex items-center justify-between">
                       {/* Quantity Controls */}
                       <div className="flex items-center bg-slate-100 rounded-full p-1">
-                         <button 
-                           className="w-8 h-8 flex items-center justify-center bg-white rounded-full text-slate-600 shadow-sm hover:text-indigo-600 disabled:opacity-50" 
-                           onClick={() => updateQty(item.product_id, item.quantity - 1)}
-                           disabled={item.quantity <= 1}
-                         >
-                           <Minus size={14} />
-                         </button>
-                         <span className="w-10 text-center font-bold text-slate-900 text-sm">{item.quantity}</span>
-                         <button 
-                           className="w-8 h-8 flex items-center justify-center bg-white rounded-full text-slate-600 shadow-sm hover:text-indigo-600" 
-                           onClick={() => updateQty(item.product_id, item.quantity + 1)}
-                         >
-                           <Plus size={14} />
-                         </button>
+                          <button 
+                            className="w-8 h-8 flex items-center justify-center bg-white rounded-full text-slate-600 shadow-sm hover:text-indigo-600 disabled:opacity-50" 
+                            onClick={() => updateQty(item.product_id, item.quantity - 1)}
+                            disabled={item.quantity <= 1}
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span className="w-10 text-center font-bold text-slate-900 text-sm">{item.quantity}</span>
+                          <button 
+                            className="w-8 h-8 flex items-center justify-center bg-white rounded-full text-slate-600 shadow-sm hover:text-indigo-600" 
+                            onClick={() => updateQty(item.product_id, item.quantity + 1)}
+                          >
+                            <Plus size={14} />
+                          </button>
                       </div>
 
                       {/* Price */}
@@ -185,17 +187,17 @@ export default function CartPage() {
                 
                 <div className="space-y-4 mb-6">
                    <div className="flex justify-between text-slate-500">
-                      <span>Subtotal</span>
-                      <span>₹{total}</span>
+                     <span>Subtotal</span>
+                     <span>₹{total}</span>
                    </div>
                    <div className="flex justify-between text-slate-500">
-                      <span>Shipping</span>
-                      <span className="text-green-600 font-medium">Free</span>
+                     <span>Shipping</span>
+                     <span className="text-green-600 font-medium">Free</span>
                    </div>
                    <div className="h-px bg-slate-100 my-2"></div>
                    <div className="flex justify-between text-slate-900 text-xl font-extrabold">
-                      <span>Total</span>
-                      <span>₹{total}</span>
+                     <span>Total</span>
+                     <span>₹{total}</span>
                    </div>
                 </div>
 

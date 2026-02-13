@@ -22,7 +22,8 @@ export default function LoginPage() {
     try {
       await login(email, password);
       // Login success, home page par bhejo
-      window.location.href = "/home"; 
+      // ✅ FIX: '/home' ko hatakar '/' kar diya
+      window.location.href = "/"; 
     } catch (err: any) {
       setError(err.message || "Invalid email or password");
       setLoading(false);

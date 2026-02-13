@@ -65,7 +65,8 @@ export default function OrdersPage() {
              </div>
              <h1 className="text-3xl font-bold text-slate-900 mb-3">No orders yet</h1>
              <p className="text-slate-500 mb-8 max-w-md">Looks like you haven't ordered anything from us in the past. Discover our products today!</p>
-             <Link href="/home">
+             {/* ✅ CHANGE: '/home' -> '/' */}
+             <Link href="/">
                <button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl px-8 py-3 font-bold shadow-lg shadow-indigo-500/30 transition-all flex items-center gap-2">
                  Start Shopping <ArrowRight size={18} />
                </button>
@@ -118,8 +119,8 @@ export default function OrdersPage() {
               {/* Items List */}
               <div className="p-6 md:p-8">
                   <div className="flex items-center gap-2 mb-6 text-green-600 font-bold">
-                     <Truck size={20} />
-                     <h3>Arriving soon</h3>
+                      <Truck size={20} />
+                      <h3>Arriving soon</h3>
                   </div>
                   
                   <div className="space-y-6">
