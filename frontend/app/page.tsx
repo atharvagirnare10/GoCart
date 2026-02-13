@@ -1,20 +1,28 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react"; 
+import { useEffect, useState, Suspense } from "react"; // ✅ Suspense import kiya
 import { getProducts, getCategories } from "@/services/product.service";
+import Link from "next/link";
 import { ArrowRight, Star, Heart, ShoppingBag, Zap, ChevronLeft, ChevronRight } from "lucide-react"; 
 import { useRouter, useSearchParams } from "next/navigation"; 
 import ProductCard from "@/components/ProductCard"; 
 import { useQuery } from "@tanstack/react-query"; 
 
 const sliderImages = [
-  "/banner1.png", "/banner2.png", "/banner3.png", "/banner4.png", "/banner5.png", "/banner6.png"
+  "/banner1.png", 
+  "/banner2.png",
+  "/banner3.png",
+  "/banner4.png",
+  "/banner5.png",
+  "/banner6.png"
 ];
 
+// ✅ 1. Main Logic ko alag component 'HomeContent' bana diya
 function HomeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // --- 1. Get State from URL ---
   const searchQuery = searchParams.get("search") || "";
   const selectedCategory = searchParams.get("category") || "All";
   const page = Number(searchParams.get("page")) || 1;
@@ -22,10 +30,13 @@ function HomeContent() {
   const [categories, setCategories] = useState<any[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  // ✅ LOGIC: Agar search nahi hai, to Random Feed dikhao
   const isRandomFeed = !searchQuery; 
 
+  // ✅ React Query for Products
   const { data, isLoading } = useQuery({
     queryKey: ['products', selectedCategory, page, searchQuery, isRandomFeed], 
+    // 👇 Yahan humne 'isRandomFeed' pass kiya hai
     queryFn: () => getProducts(selectedCategory, page, 30, searchQuery, isRandomFeed), 
     staleTime: 5 * 60 * 1000, 
   });
@@ -39,6 +50,7 @@ function HomeContent() {
     });
   }, []);
 
+  // ✅ AUTO SLIDE EFFECT
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
@@ -49,106 +61,288 @@ function HomeContent() {
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
 
+  // --- Handle Category Change ---
   const handleCategoryChange = (cat: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (cat !== "All") params.set("category", cat);
-    else params.delete("category");
-    params.set("page", "1"); 
+    const params = new URLSearchParams();
+    if (cat !== "All") params.append("category", cat);
+    params.append("page", "1"); 
     router.push(`/home?${params.toString()}`);
   };
 
+  // --- Handle Page Change ---
   const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", newPage.toString());
+    const params = new URLSearchParams();
+    if (selectedCategory !== "All") params.append("category", selectedCategory);
+    if (searchQuery) params.append("search", searchQuery);
+    params.append("page", newPage.toString());
+    
     router.push(`/home?${params.toString()}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', color: '#0f172a', position: 'relative', overflowX: 'hidden' }}>
-      {/* Background Blobs */}
+    <div style={{
+      minHeight: '100vh',
+      background: '#f8fafc',
+      color: '#0f172a',
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      position: 'relative',
+      overflowX: 'hidden'
+    }}>
+      
+      {/* --- BACKGROUND BLOBS --- */}
       <div style={{ position: 'fixed', inset: '0', overflow: 'hidden', pointerEvents: 'none', zIndex: '-10' }}>
         <div className="blob blob-1"></div>
         <div className="blob blob-2"></div>
         <div className="blob blob-3"></div>
       </div>
 
+      {/* --- HERO SECTION (Only show if NOT searching) --- */}
       {!searchQuery && (
-        <div className="max-w-[1500px] mx-auto px-4 w-full">
-          <div className="relative w-full h-[300px] md:h-[500px] overflow-hidden mt-32 mb-10 mx-auto rounded-3xl shadow-2xl group">
-             {sliderImages.map((img, index) => (
-                <div key={index} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"}`}>
-                    <img src={img} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
-                </div>
-             ))}
-             <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100"><ChevronLeft size={24} /></button>
-             <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100"><ChevronRight size={24} /></button>
-          </div>
+        <>
+          <div className="max-w-[1500px] mx-auto px-4 w-full">
+            
+            <div className="relative w-full h-[300px] md:h-[500px] overflow-hidden mt-32 mb-10 mx-auto rounded-3xl shadow-2xl group">
+               {/* Slides */}
+               {sliderImages.map((img, index) => (
+                  <div 
+                    key={index}
+                    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"}`}
+                  >
+                      <img src={img} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
+                  </div>
+               ))}
 
-          <div className="w-full mb-16">
-            <div className="category-scroll-container">
-              <button onClick={() => handleCategoryChange("All")} className={`category-btn ${selectedCategory === "All" ? "active" : ""}`}>All Products</button>
-              {categories.map((cat: any) => (
-                <button key={cat.category_name} onClick={() => handleCategoryChange(cat.category_name)} className={`category-btn ${selectedCategory === cat.category_name ? "active" : ""}`}>{cat.category_name}</button>
-              ))}
+               <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100">
+                  <ChevronLeft size={24} />
+               </button>
+               <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100">
+                  <ChevronRight size={24} />
+               </button>
+
+               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                  {sliderImages.map((_, index) => (
+                      <button 
+                        key={index}
+                        onClick={() => setCurrentSlide(index)}
+                        className={`w-2 h-2 rounded-full transition-all ${index === currentSlide ? "bg-white w-6" : "bg-white/50"}`}
+                      />
+                  ))}
+               </div>
             </div>
+
+            <div className="w-full mb-16">
+              <div className="w-full overflow-hidden relative group rounded-2xl bg-white/50 backdrop-blur-sm border border-white shadow-sm p-2">
+                <div className="category-scroll-container">
+                  <button 
+                    onClick={() => handleCategoryChange("All")} 
+                    className={`category-btn ${selectedCategory === "All" ? "active" : ""}`}
+                  >
+                    All Products
+                  </button>
+                  {categories.map((cat: any) => (
+                    <button 
+                      key={cat.category_name} 
+                      onClick={() => handleCategoryChange(cat.category_name)} 
+                      className={`category-btn ${selectedCategory === cat.category_name ? "active" : ""}`}
+                    >
+                      {cat.category_name}
+                    </button>
+                  ))}
+                </div>
+                <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-white to-transparent pointer-events-none md:hidden"></div>
+              </div>
+            </div>
+
           </div>
-        </div>
+        </>
       )}
 
+      {/* --- MAIN CONTENT SECTION --- */}
       <section className="main-section" style={{ marginTop: searchQuery ? '9rem' : '0' }}>
+        
         <div className="section-header">
+          <div>
             <h2 className="section-title">
-              {searchQuery ? <>Results for <span className="text-indigo-600">"{searchQuery}"</span></> : <>{selectedCategory} <span className="hot-badge">Hot</span></>}
+              {searchQuery ? (
+                 <>Results for <span className="text-indigo-600">"{searchQuery}"</span></>
+              ) : (
+                 <>{selectedCategory === "All" ? "Trending Now" : selectedCategory} <span className="hot-badge">Hot</span></>
+              )}
             </h2>
-          <span className="page-badge">Page {page} of {totalPages}</span>
+          </div>
+          <span className="page-badge">
+            Page {page} of {totalPages}
+          </span>
         </div>
 
         {isLoading ? (
           <div className="product-grid">
-            {[...Array(8)].map((_, i) => <div key={i} className="skeleton-card" />)}
+            {[...Array(12)].map((_, i) => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton-img"></div>
+                <div className="skeleton-text w-50"></div>
+                <div className="skeleton-text w-25"></div>
+              </div>
+            ))}
           </div>
         ) : products.length === 0 ? (
           <div className="empty-state">
             <div className="empty-icon">🛍️</div>
-            <button onClick={() => router.push(`/home`)} className="clear-btn">Clear Filters</button>
+            <h2 className="empty-title">No products found</h2>
+            <p className="empty-subtitle">Try adjusting your search or filter to find what you're looking for.</p>
+            <button onClick={() => {
+                const params = new URLSearchParams();
+                router.push(`/home`);
+            }} className="clear-btn">
+              Clear Search & Filters
+            </button>
           </div>
         ) : (
           <>
             <div className="product-grid">
-              {products.map((product: any) => <ProductCard key={product.id} product={product} />)}
+              {products.map((product: any) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
             </div>
+
             <div className="pagination-container">
-              <button disabled={page === 1} onClick={() => handlePageChange(page - 1)} className="page-btn">Prev</button>
-              <div className="page-number">{page} / {totalPages}</div>
-              <button disabled={page >= totalPages} onClick={() => handlePageChange(page + 1)} className="page-btn next">Next</button>
+              <button 
+                disabled={page === 1}
+                onClick={() => handlePageChange(Math.max(1, page - 1))}
+                className={`page-btn ${page === 1 ? "disabled" : ""}`}
+              >
+                <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} />
+                Prev
+              </button>
+              
+              <div className="page-number">
+                {page} <span style={{ color: '#cbd5e1', margin: '0 0.25rem' }}>/</span> {totalPages}
+              </div>
+
+              <button 
+                disabled={page >= totalPages}
+                onClick={() => handlePageChange(page + 1)}
+                className={`page-btn next ${page >= totalPages ? "disabled" : ""}`}
+              >
+                Next
+                <ArrowRight size={16} />
+              </button>
             </div>
           </>
         )}
       </section>
 
+      {/* --- FEATURES FOOTER --- */}
+      <section className="features-section">
+        <div className="features-card">
+          <div className="features-grid">
+            {[
+              { title: "Instant Delivery", desc: "Get products delivered within 24 hours.", color: "violet", Icon: Zap },
+              { title: "Secure Payments", desc: "100% secure payment gateway.", color: "fuchsia", Icon: Heart },
+              { title: "24/7 Support", desc: "Dedicated support team for you.", color: "cyan", Icon: ShoppingBag }
+            ].map((feature, i) => (
+              <div key={i} className="feature-item">
+                <div className={`feature-icon ${feature.color}`}>
+                  <feature.Icon size={28} />
+                </div>
+                <h4 className="feature-title">{feature.title}</h4>
+                <p className="feature-desc">{feature.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- STYLES --- */}
       <style jsx global>{`
-        .blob { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.4; }
+        /* Animations */
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+
+        /* Background Blobs */
+        .blob { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.4; animation: float 6s ease-in-out infinite; }
         .blob-1 { top: -10%; left: -10%; width: 600px; height: 600px; background: #a855f7; }
-        .blob-2 { bottom: 10%; right: -10%; width: 500px; height: 500px; background: #22d3ee; }
-        .blob-3 { top: 40%; left: 20%; width: 300px; height: 300px; background: #f472b6; }
-        .category-scroll-container { display: flex; gap: 1rem; overflow-x: auto; padding: 1rem 0; }
-        .category-btn { padding: 0.6rem 1.5rem; border-radius: 9999px; border: 1px solid #e2e8f0; cursor: pointer; }
-        .category-btn.active { background: linear-gradient(135deg, #7c3aed, #d946ef); color: white; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.5rem; }
-        .main-section { max-width: 1500px; margin: 0 auto; padding: 0 1rem 4rem; }
-        .pagination-container { display: flex; justify-content: center; gap: 1rem; margin-top: 3rem; }
-        .page-btn { padding: 0.5rem 1rem; background: white; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; }
-        .page-btn.next { background: #0f172a; color: white; }
-        @media (max-width: 768px) { .product-grid { grid-template-columns: 1fr 1fr; } }
+        .blob-2 { bottom: 10%; right: -10%; width: 500px; height: 500px; background: #22d3ee; animation-delay: 2s; }
+        .blob-3 { top: 40%; left: 20%; width: 300px; height: 300px; background: #f472b6; filter: blur(100px); }
+
+        .badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.375rem 1rem; background: rgba(255,255,255,0.2); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.4); border-radius: 9999px; color: #fff; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: transform 0.2s; }
+        .badge:hover { transform: scale(1.05); }
+        .pulse-icon { animation: pulse 2s infinite; }
+
+        /* Category Scroll */
+        .category-scroll-container { display: flex; gap: 1rem; overflow-x: auto; padding: 0.5rem; width: 100%; scrollbar-width: none; }
+        .category-scroll-container::-webkit-scrollbar { display: none; }
+
+        .category-btn { flex: 0 0 auto; white-space: nowrap; padding: 0.6rem 1.5rem; border-radius: 9999px; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; cursor: pointer; border: 1px solid #e2e8f0; background: rgba(255, 255, 255, 0.8); color: #64748b; }
+        .category-btn:hover { background: #ffffff; color: #0f172a; transform: translateY(-2px); }
+        .category-btn.active { border: 1px solid transparent; background: linear-gradient(135deg, #7c3aed, #d946ef); color: #ffffff; box-shadow: 0 10px 20px -5px rgba(217, 70, 239, 0.4); transform: scale(1.05); }
+
+        /* Main Section */
+        .main-section { max-width: 1500px; margin: 0 auto; padding: 0 1rem 6rem; width: 100%; }
+        .section-header { display: flex; alignItems: flex-end; justify-content: space-between; margin-bottom: 2rem; padding: 0 0.5rem; }
+        .section-title { font-size: 1.875rem; font-weight: 700; color: #0f172a; display: flex; alignItems: center; gap: 0.5rem; }
+        .hot-badge { font-size: 0.875rem; font-weight: 400; color: #94a3b8; background: rgba(255,255,255,0.5); padding: 0.125rem 0.5rem; border-radius: 0.375rem; border: 1px solid #f1f5f9; }
+        .page-badge { font-size: 0.75rem; font-weight: 700; color: #64748b; background: #ffffff; padding: 0.375rem 0.75rem; border-radius: 9999px; border: 1px solid #e2e8f0; }
+
+        .product-grid { 
+           display: grid; 
+           grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); 
+           gap: 1.5rem; 
+        }
+        
+        .pagination-container { display: flex; justify-content: center; alignItems: center; gap: 1rem; margin-top: 5rem; }
+        .page-btn { padding: 0.75rem 1.5rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 1rem; font-weight: 700; color: #64748b; cursor: pointer; transition: all 0.3s; display: flex; alignItems: center; gap: 0.5rem; }
+        .page-btn:hover:not(.disabled) { background: #f8fafc; border-color: #c4b5fd; }
+        .page-btn.next { background: #0f172a; color: #ffffff; border-color: transparent; }
+        .page-btn.next:hover:not(.disabled) { background: #1e293b; box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.2); }
+        .page-btn.disabled { opacity: 0.5; cursor: not-allowed; }
+        .page-number { padding: 0.75rem 1.25rem; background: #ffffff; color: #7c3aed; font-weight: 700; border-radius: 1rem; border: 1px solid #ede9fe; }
+
+        .skeleton-card { aspect-ratio: 3/4; background: #ffffff; border-radius: 1.5rem; border: 1px solid #f1f5f9; padding: 1rem; animation: pulse 1.5s infinite; }
+        .skeleton-img { width: 100%; height: 75%; background: #f1f5f9; border-radius: 1rem; margin-bottom: 1rem; }
+        .skeleton-text { height: 1rem; background: #f1f5f9; border-radius: 0.25rem; margin-bottom: 0.5rem; }
+        .w-50 { width: 50%; } .w-25 { width: 25%; }
+
+        .empty-state { text-align: center; padding: 6rem 0; background: rgba(255,255,255,0.4); backdrop-filter: blur(12px); border-radius: 2rem; border: 1px solid rgba(255,255,255,0.6); }
+        .empty-icon { font-size: 3.75rem; margin-bottom: 1rem; animation: bounce 1s infinite; }
+        .empty-title { font-size: 1.5rem; font-weight: 700; color: #334155; }
+        .empty-subtitle { color: #64748b; margin-bottom: 2rem; }
+        .clear-btn { padding: 0.75rem 2rem; background: linear-gradient(to right, #7c3aed, #d946ef); color: #ffffff; border-radius: 0.75rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.3s; }
+        .clear-btn:hover { transform: scale(1.05); box-shadow: 0 10px 15px -3px rgba(217, 70, 239, 0.3); }
+
+        .features-section { max-width: 1500px; margin: 0 auto; padding: 0 1.5rem 5rem; width: 100%; }
+        .features-card { background: linear-gradient(to bottom right, rgba(255,255,255,0.8), rgba(255,255,255,0.4)); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.6); border-radius: 2.5rem; padding: 3.5rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; text-align: center; }
+        .feature-item { display: flex; flex-direction: column; align-items: center; }
+        .feature-icon { width: 4rem; height: 4rem; border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; transition: transform 0.3s; }
+        .feature-icon:hover { transform: scale(1.1); }
+        .feature-icon.violet { background: #f5f3ff; color: #7c3aed; }
+        .feature-icon.fuchsia { background: #fdf4ff; color: #d946ef; }
+        .feature-icon.cyan { background: #ecfeff; color: #06b6d4; }
+        .feature-title { font-size: 1.125rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem; }
+        .feature-desc { color: #64748b; font-size: 0.875rem; max-width: 20rem; }
+
+        @media (max-width: 768px) {
+          .features-grid { grid-template-columns: 1fr; gap: 2rem; }
+          .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+          .page-badge { display: none; }
+        }
       `}</style>
     </div>
   );
 }
 
+// ✅ 2. Default export 'HomePage' jo 'HomeContent' ko Suspense me wrap karega
 export default function HomePage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    // ✅ Yahan Suspense boundary lagayi hai jo error fix karegi
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-indigo-600"></div>
+      </div>
+    }>
       <HomeContent />
     </Suspense>
   );
