@@ -4,15 +4,16 @@
 const LOCAL_URL = "http://127.0.0.1:5000/api";
 
 // Apna Current Ngrok URL yahan daal (Har baar change hota hai agar free wala band ho jaye)
+// ✅ FIX: Ab ye pehle Env Variable check karega, agar nahi mila toh Render URL use karega
 const NGROK_URL = process.env.NEXT_PUBLIC_API_URL || "https://gocart-0r8s.onrender.com/api"; 
 
-// 👇 SWITCH: True = Dost/Mobile, False = Local Development
+// 👇 SWITCH: True = Dost/Mobile/Production, False = Local Development
 const USE_NGROK = true; 
 
 // ✅ FIX: Humne 'process.env' hata diya taaki koi confusion na rahe
 const BASE_URL = USE_NGROK ? NGROK_URL : LOCAL_URL;
 
-console.log(`🔥 API MODE: ${USE_NGROK ? "Online (Ngrok)" : "Local"} | URL: ${BASE_URL}`);
+console.log(`🔥 API MODE: ${USE_NGROK ? "Online (Render/Env)" : "Local"} | URL: ${BASE_URL}`);
 
 /**
  * Common API fetch wrapper
