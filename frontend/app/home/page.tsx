@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react"; 
+import { useEffect, useState, Suspense } from "react";
 import { getProducts, getCategories } from "@/services/product.service";
-import { ArrowRight, Star, Heart, ShoppingBag, Zap, ChevronLeft, ChevronRight } from "lucide-react"; 
-import { useRouter, useSearchParams } from "next/navigation"; 
-import ProductCard from "@/components/ProductCard"; 
-import { useQuery } from "@tanstack/react-query"; 
+import { ArrowRight, Star, Heart, ShoppingBag, Zap, ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import ProductCard from "@/components/ProductCard";
+import { useQuery } from "@tanstack/react-query";
 
 const sliderImages = [
   "/banner1.png", "/banner2.png", "/banner3.png", "/banner4.png", "/banner5.png", "/banner6.png"
@@ -22,12 +22,12 @@ function HomeContent() {
   const [categories, setCategories] = useState<any[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const isRandomFeed = !searchQuery; 
+  const isRandomFeed = !searchQuery;
 
   const { data, isLoading } = useQuery({
-    queryKey: ['products', selectedCategory, page, searchQuery, isRandomFeed], 
-    queryFn: () => getProducts(selectedCategory, page, 30, searchQuery, isRandomFeed), 
-    staleTime: 5 * 60 * 1000, 
+    queryKey: ['products', selectedCategory, page, searchQuery, isRandomFeed],
+    queryFn: () => getProducts(selectedCategory, page, 30, searchQuery, isRandomFeed),
+    staleTime: 5 * 60 * 1000,
   });
 
   const products = data?.products || [];
@@ -42,7 +42,7 @@ function HomeContent() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    }, 5000); 
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
@@ -53,7 +53,7 @@ function HomeContent() {
     const params = new URLSearchParams(searchParams.toString());
     if (cat !== "All") params.set("category", cat);
     else params.delete("category");
-    params.set("page", "1"); 
+    params.set("page", "1");
     router.push(`/home?${params.toString()}`);
   };
 
@@ -76,13 +76,13 @@ function HomeContent() {
       {!searchQuery && (
         <div className="max-w-[1500px] mx-auto px-4 w-full">
           <div className="relative w-full h-[300px] md:h-[500px] overflow-hidden mt-32 mb-10 mx-auto rounded-3xl shadow-2xl group">
-             {sliderImages.map((img, index) => (
-                <div key={index} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"}`}>
-                    <img src={img} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
-                </div>
-             ))}
-             <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100"><ChevronLeft size={24} /></button>
-             <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100"><ChevronRight size={24} /></button>
+            {sliderImages.map((img, index) => (
+              <div key={index} className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? "opacity-100" : "opacity-0"}`}>
+                <img src={img} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
+              </div>
+            ))}
+            <button onClick={prevSlide} className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100"><ChevronLeft size={24} /></button>
+            <button onClick={nextSlide} className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/30 backdrop-blur-md rounded-full text-white hover:bg-white hover:text-black transition-all opacity-0 group-hover:opacity-100"><ChevronRight size={24} /></button>
           </div>
 
           <div className="w-full mb-16">
@@ -98,9 +98,9 @@ function HomeContent() {
 
       <section className="main-section" style={{ marginTop: searchQuery ? '9rem' : '0' }}>
         <div className="section-header">
-            <h2 className="section-title">
-              {searchQuery ? <>Results for <span className="text-indigo-600">"{searchQuery}"</span></> : <>{selectedCategory} <span className="hot-badge">Hot</span></>}
-            </h2>
+          <h2 className="section-title">
+            {searchQuery ? <>Results for <span className="text-indigo-600">"{searchQuery}"</span></> : <>{selectedCategory} <span className="hot-badge">Hot</span></>}
+          </h2>
           <span className="page-badge">Page {page} of {totalPages}</span>
         </div>
 
