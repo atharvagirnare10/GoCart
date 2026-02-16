@@ -1,17 +1,20 @@
 import nodemailer from "nodemailer";
 import "dotenv/config";
 
-// ✅ TLS Configuration (Port 587) - Render/Cloud deployments ke liye best hai
+// ✅ Updated: TLS Configuration (Port 587)
+// Render/Cloud deployments pe strict SSL errors ko avoid karne ke liye
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
-  secure: false, // 587 ke liye false hona chahiye
+  secure: false, // Port 587 ke liye ye false hona chahiye (STARTTLS use hota hai)
   auth: {
     user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
+    pass: process.env.MAIL_PASS, // App Password hi use karna
   },
   tls: {
-    rejectUnauthorized: false // Connection block hone se bachata hai
+    // Ye line server ko self-signed certificates accept karne deti hai
+    // Cloud servers pe connection block hone se bachata hai
+    rejectUnauthorized: false 
   }
 });
 
@@ -20,18 +23,21 @@ export async function sendOTPEmail(email, otp) {
     const info = await transporter.sendMail({
       from: `"GoCart Official" <${process.env.MAIL_USER}>`,
       to: email,
-      subject: "Your Verification Code",
+      subject: "GoCart - Your Verification Code",
       html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px;">
-          <h2>Your OTP is: <span style="color: #4f46e5;">${otp}</span></h2>
-          <p>This code is valid for 10 minutes.</p>
+        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+          <h2 style="color: #333;">Hello!</h2>
+          <p>Your One-Time Password (OTP) for verification is:</p>
+          <h1 style="color: #4f46e5; letter-spacing: 2px;">${otp}</h1>
+          <p>This code is valid for <strong>10 minutes</strong>.</p>
+          <p style="font-size: 12px; color: #888; margin-top: 20px;">If you didn't request this, please ignore this email.</p>
         </div>
       `,
     });
     console.log("✅ Email sent successfully:", info.messageId);
     return true;
   } catch (error) {
-    console.error("❌ Email Error (Check logs):", error.message);
+    console.error("❌ Email Error (Details):", error);
     return false;
   }
 }
