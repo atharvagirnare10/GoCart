@@ -1,55 +1,55 @@
-import nodemailer from "nodemailer";
-import "dotenv/config";
+import SibApiV3Sdk from "sib-api-v3-sdk";
+import dotenv from "dotenv";
 
-// ✅ Updated Configuration for Brevo (Using Port 465 for stability)
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com", // Brevo ka official host
-  port: 465,                    // SSL Port (Render ke liye best hai)
-  secure: true,                 // Port 465 ke liye true hona chahiye
-  auth: {
-    user: process.env.SMTP_USER, // Brevo Login ID (e.g., a27bbd001@smtp-brevo.com)
-    pass: process.env.SMTP_PASS, // Brevo se generate ki gayi SMTP Key
-  },
-  // ✅ Timeout settings taaki connection drop na ho
-  connectionTimeout: 10000, 
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
-  tls: {
-    // Certificate issues ko bypass karne ke liye
-    rejectUnauthorized: false 
-  }
-});
+dotenv.config();
 
-/**
- * OTP Email bhejane ka function
- */
+// 🔐 Setup Brevo Client
+const client = SibApiV3Sdk.ApiClient.instance;
+
+const apiKey = client.authentications["api-key"];
+apiKey.apiKey = process.env.BREVO_API_KEY;
+
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
+// 📩 OTP Email Function
 export async function sendOTPEmail(email, otp) {
   try {
-    const info = await transporter.sendMail({
-      // ⚠️ IMPORTANT: 'from' email Brevo par verified hona chahiye
-      from: `"GoCart Official" <${process.env.SMTP_FROM}>`, 
-      to: email,
+
+    if (!process.env.BREVO_API_KEY) {
+      throw new Error("BREVO_API_KEY is missing in environment variables");
+    }
+
+    if (!process.env.SMTP_FROM) {
+      throw new Error("SMTP_FROM is missing in environment variables");
+    }
+
+    const response = await apiInstance.sendTransacEmail({
+      sender: {
+        name: "GoCart Official",
+        email: process.env.SMTP_FROM, // ⚠️ Ye email Brevo me verified hona chahiye
+      },
+      to: [
+        {
+          email: email,
+        },
+      ],
       subject: "GoCart - Your Verification Code",
-      html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px; max-width: 500px; margin: auto;">
-          <h2 style="color: #333; text-align: center;">Verify Your Account</h2>
-          <p>Hello,</p>
-          <p>Use the following One-Time Password (OTP) to complete your registration:</p>
-          <div style="background: #f4f4f4; padding: 15px; text-align: center; border-radius: 5px;">
-            <h1 style="color: #4f46e5; margin: 0; letter-spacing: 5px;">${otp}</h1>
-          </div>
-          <p style="margin-top: 20px;">This code is valid for <strong>10 minutes</strong>.</p>
-          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-          <p style="font-size: 12px; color: #888; text-align: center;">If you didn't request this, please ignore this email.</p>
+      htmlContent: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2>Verify Your Account</h2>
+          <p>Your OTP is:</p>
+          <h1 style="color: #4f46e5; letter-spacing: 4px;">${otp}</h1>
+          <p>This code is valid for 10 minutes.</p>
+          <p>If you didn't request this, please ignore this email.</p>
         </div>
       `,
     });
 
-    console.log("✅ Email sent successfully via Brevo:", info.messageId);
+    console.log("✅ Email sent successfully:", response);
     return true;
+
   } catch (error) {
-    // Logs mein pura error dikhayega taaki debugging asaan ho
-    console.error("❌ Email Error (Details):", error);
+    console.error("❌ Brevo Email Error:", error.response?.body || error.message);
     return false;
   }
 }
