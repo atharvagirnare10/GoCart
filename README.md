@@ -1,4 +1,3 @@
-
 # 🛒 GoCart | Scalable E-commerce Engine
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge)](https://gocart01.vercel.app/)
 
@@ -7,7 +6,7 @@ GoCart is a high-performance, full-stack e-commerce platform built with the **PE
 ---
 
 ## 🔗 Project Links
-* **Live Deployment:** [gocart01.vercel.app](https://gocart01.vercel.app/)
+* **Live Deployment:** [GoCart](https://go-cart-mu.vercel.app?_vercel_share=NDoBCyNfpwO7UisvoNDIOHC1QCW7lnDk)
 * **Backend API:** Hosted via Ngrok/Cloud for testing.
 
 ---
@@ -39,7 +38,7 @@ The core challenge of this project was managing a dataset of **40,000+ static pr
 * **Runtime:** Node.js
 * **Framework:** Express.js
 * **Authentication:** JWT (JSON Web Tokens)
-* **Emailing:** Nodemailer for OTP & notifications
+* **Emailing:** Brevo (Sendinblue) API via sib-api-v3-sdk for OTP & notificationss
 
 ### **Database**
 * **Engine:** PostgreSQL
@@ -89,8 +88,8 @@ Create a `.env` file in the backend folder:
 ```env
 DATABASE_URL=your_postgresql_connection_string
 JWT_SECRET=your_jwt_secret_key
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_app_password
+BREVO_API_KEY=your_brevo_api_key
+SMTP_FROM=your_verified_sender_email@domain.com
 
 ```
 
