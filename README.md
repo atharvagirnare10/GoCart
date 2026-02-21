@@ -78,7 +78,7 @@ cd gocart
 # Install backend dependencies
 cd backend && npm install
 # Install frontend dependencies
-cd ../frontend && npm install
+cd ../frontend & npm install
 
 ```
 
