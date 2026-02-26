@@ -150,7 +150,7 @@ function HomeContent() {
                </div>
             </div>
 
-            {/* ✅ CATEGORY SLIDER (Bigger Capsule Style - Filters Removed from here) */}
+            {/* ✅ CATEGORY SLIDER */}
             <div className="w-full mb-14 relative px-2">
               <div className="max-w-[1300px] mx-auto bg-white rounded-full shadow-md border border-slate-100 p-3 overflow-hidden relative">
                 <div className="category-scroll-container">
@@ -175,63 +175,164 @@ function HomeContent() {
               </div>
             </div>
 
-            {/* ✅ PROMOTIONAL BLOCKS */}
+            {/* ✅ PROMOTIONAL BLOCKS (PREMIUM STAGGERED MOSAIC - NO BADGES - NO EXPLORE BUTTON) */}
             {selectedCategory === "All" && (
-              <div className="flex flex-wrap justify-center items-stretch gap-6 mb-16">
+              <div className="flex flex-wrap justify-center items-stretch gap-6 mb-16 px-2">
                 
-                {/* Block 1: Home */}
-                <Link href="/" className="w-[100%] md:w-[47%] lg:w-[23%] no-underline group">
-                  <div className="bg-white p-5 h-full flex flex-col justify-between shadow-sm border border-slate-200 rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                    <h3 className="text-[17px] font-bold text-slate-800 mb-4">Revamp your home</h3>
-                    <div className="grid grid-cols-2 gap-3 mt-2 flex-grow">
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1584100936595-c0654b55a2e6?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Cushions</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1544457070-4cd773b4d71e?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Decor</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1595514535415-8aeac6f66318?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Storage</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Lighting</div>
+                {/* --- BLOCK 1: HOME (Teal Theme) --- */}
+                <Link href="/" className="w-[100%] md:w-[47%] lg:w-[23%] no-underline relative group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-emerald-600 rounded-[32px] blur-xl opacity-0 group-hover:opacity-25 transition-opacity duration-700"></div>
+                  
+                  <div className="relative bg-white p-4 h-full flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 rounded-[32px] transition-transform duration-500 hover:-translate-y-2">
+                    
+                    {/* Header */}
+                    <div className="flex justify-between items-center mb-5 px-2 pt-2">
+                      <h3 className="text-[19px] font-black text-slate-900 tracking-tight leading-none">Revamp your home</h3>
                     </div>
-                    <h4 className="mt-5 text-[14px] font-bold text-teal-600 flex items-center gap-1 group-hover:text-teal-800">Explore <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></h4>
+
+                    <div className="flex flex-col gap-2 flex-grow">
+                      <div className="grid grid-cols-5 gap-2 h-[115px]">
+                        <div className="col-span-3 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://icmedianew.gumlet.io/pub/media/catalog/product/cache/7c90eecf75182456ca0a208cc3917af8/52121512SD02347/India-Circus-By-Krsnaa-Mehta-Blaue-Blume-Cushion-Cover-Set-of-2-52121512SD02347-1.jpg" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Cushions" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Cushions</div>
+                        </div>
+                        <div className="col-span-2 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://images.unsplash.com/photo-1544457070-4cd773b4d71e?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Decor" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Decor</div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-5 gap-2 h-[115px]">
+                        <div className="col-span-2 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://m.media-amazon.com/images/I/717gcN7j0nL._AC_UF894,1000_QL80_.jpg" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Storage" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Storage</div>
+                        </div>
+                        <div className="col-span-3 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://woodshells.co.in/wp-content/uploads/2025/05/A37I3769-min-scaled-e1672155249110.jpg" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Lighting" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Lighting</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </Link>
 
-                {/* Block 2: Appliances */}
-                <Link href="/" className="w-[100%] md:w-[47%] lg:w-[23%] no-underline group">
-                  <div className="bg-white p-5 h-full flex flex-col justify-between shadow-sm border border-slate-200 rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                    <h3 className="text-[17px] font-bold text-slate-800 mb-4">Appliances | 55% off</h3>
-                    <div className="grid grid-cols-2 gap-3 mt-2 flex-grow">
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1620288627223-53302f4e8c74?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> ACs</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Washers</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1585659722983-38ca8da4e508?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Microwaves</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Fridges</div>
+                {/* --- BLOCK 2: APPLIANCES (Indigo Theme) --- */}
+                <Link href="/" className="w-[100%] md:w-[47%] lg:w-[23%] no-underline relative group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-400 to-violet-600 rounded-[32px] blur-xl opacity-0 group-hover:opacity-25 transition-opacity duration-700"></div>
+                  
+                  <div className="relative bg-white p-4 h-full flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 rounded-[32px] transition-transform duration-500 hover:-translate-y-2">
+                    
+                    <div className="flex justify-between items-center mb-5 px-2 pt-2">
+                      <h3 className="text-[19px] font-black text-slate-900 tracking-tight leading-none">Appliances</h3>
                     </div>
-                    <h4 className="mt-5 text-[14px] font-bold text-indigo-600 flex items-center gap-1 group-hover:text-indigo-800">Explore <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></h4>
+
+                    <div className="flex flex-col gap-2 flex-grow">
+                      <div className="grid grid-cols-5 gap-2 h-[115px]">
+                        <div className="col-span-2 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://enciser.com/wp-content/uploads/2025/05/Top-10-1.5-ton-split-ac.jpg" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="ACs" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">ACs</div>
+                        </div>
+                        <div className="col-span-3 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Washers" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Washers</div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-5 gap-2 h-[115px]">
+                        <div className="col-span-3 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://www.livemint.com/lm-img/img/2026/01/07/600x338/microwave_1767784659800_1767784666886.png" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Microwaves" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Microwaves</div>
+                        </div>
+                        <div className="col-span-2 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiP1QX0egv6r5jecOBz4Yt6TLM1CUAkCVSJw&s" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Fridges" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Fridges</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </Link>
 
-                {/* Block 3: Mobiles */}
-                <Link href="/" className="w-[100%] md:w-[47%] lg:w-[23%] no-underline group">
-                  <div className="bg-white p-5 h-full flex flex-col justify-between shadow-sm border border-slate-200 rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                    <h3 className="text-[17px] font-bold text-slate-800 mb-4">Latest Mobiles</h3>
-                    <div className="grid grid-cols-2 gap-3 mt-2 flex-grow">
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Phones</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Buds</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Speakers</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Headsets</div>
+                {/* --- BLOCK 3: MOBILES (Amber Theme) --- */}
+                <Link href="/" className="w-[100%] md:w-[47%] lg:w-[23%] no-underline relative group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-400 to-amber-500 rounded-[32px] blur-xl opacity-0 group-hover:opacity-25 transition-opacity duration-700"></div>
+                  
+                  <div className="relative bg-white p-4 h-full flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 rounded-[32px] transition-transform duration-500 hover:-translate-y-2">
+                    
+                    <div className="flex justify-between items-center mb-5 px-2 pt-2">
+                      <h3 className="text-[19px] font-black text-slate-900 tracking-tight leading-none">Latest Mobiles</h3>
                     </div>
-                    <h4 className="mt-5 text-[14px] font-bold text-amber-600 flex items-center gap-1 group-hover:text-amber-800">Explore <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></h4>
+
+                    <div className="flex flex-col gap-2 flex-grow">
+                      <div className="grid grid-cols-5 gap-2 h-[115px]">
+                        <div className="col-span-3 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://cdn.mos.cms.futurecdn.net/aFZoQKNZwEnee8m63KTyeD.jpg" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Phones" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Phones</div>
+                        </div>
+                        <div className="col-span-2 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://ambraneindia.com/cdn/shop/products/earbuds-with-noise-cancellation.png?v=1763459908&width=300" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Buds" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Buds</div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-5 gap-2 h-[115px]">
+                        <div className="col-span-2 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://helios-i.mashable.com/imagery/reviews/06Nb9YbigJ8aBaCuqhpyFsf/hero-image.fill.size_1248x702.v1712801670.jpg" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Speakers" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Speakers</div>
+                        </div>
+                        <div className="col-span-3 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://cdn.shopify.com/s/files/1/0057/8938/4802/files/LR_480.png?v=1733741345&width=400" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Headsets" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Headsets</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </Link>
 
-                {/* Block 4: Fashion */}
-                <Link href="/" className="w-[100%] md:w-[47%] lg:w-[23%] no-underline group">
-                  <div className="bg-white p-5 h-full flex flex-col justify-between shadow-sm border border-slate-200 rounded-2xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                    <h3 className="text-[17px] font-bold text-slate-800 mb-4">Fashion | 60% off</h3>
-                    <div className="grid grid-cols-2 gap-3 mt-2 flex-grow">
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Casuals</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Formals</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1533313264027-ec1be93c78ce?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Winter</div>
-                      <div className="text-[12px] text-center font-medium text-slate-700"><img src="https://images.unsplash.com/photo-1523206489230-c012c64b2b48?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-[90px] object-cover rounded-xl mb-2 group-hover:scale-105 transition-transform bg-slate-100" /> Extras</div>
+                {/* --- BLOCK 4: FASHION (Rose Theme) --- */}
+                <Link href="/" className="w-[100%] md:w-[47%] lg:w-[23%] no-underline relative group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-rose-400 to-pink-600 rounded-[32px] blur-xl opacity-0 group-hover:opacity-25 transition-opacity duration-700"></div>
+                  
+                  <div className="relative bg-white p-4 h-full flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 rounded-[32px] transition-transform duration-500 hover:-translate-y-2">
+                    
+                    <div className="flex justify-between items-center mb-5 px-2 pt-2">
+                      <h3 className="text-[19px] font-black text-slate-900 tracking-tight leading-none">Fashion</h3>
                     </div>
-                    <h4 className="mt-5 text-[14px] font-bold text-pink-600 flex items-center gap-1 group-hover:text-pink-800">Explore <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" /></h4>
+
+                    <div className="flex flex-col gap-2 flex-grow">
+                      <div className="grid grid-cols-5 gap-2 h-[115px]">
+                        <div className="col-span-2 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Casuals" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Casuals</div>
+                        </div>
+                        <div className="col-span-3 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=400&q=80" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Formals" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Formals</div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-5 gap-2 h-[115px]">
+                        <div className="col-span-3 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjBqsduwbeqzp4dH4IQQw4i-zhaDTfagAoyQ&s" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Winter" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Winter</div>
+                        </div>
+                        <div className="col-span-2 relative rounded-2xl overflow-hidden group/img">
+                          <img src="https://www.networksolutions.com/blog/wp-content/uploads/2025/03/Products-to-sell-online-1.png" referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" alt="Extras" />
+                          <div className="absolute inset-0 bg-black/10 group-hover/img:bg-black/30 transition-colors duration-500"></div>
+                          <div className="absolute bottom-2 left-2 backdrop-blur-md bg-black/30 border border-white/20 text-white text-[10px] uppercase tracking-wide font-bold px-3 py-1.5 rounded-full">Extras</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </Link>
 
@@ -279,7 +380,7 @@ function HomeContent() {
             {/* Controls (Right Side) */}
             <div className="flex flex-wrap items-center gap-3">
               
-              {/* PRICE FILTER UI (Moved here) */}
+              {/* PRICE FILTER UI */}
               <div className="flex items-center gap-2 bg-white rounded-full shadow-sm border border-slate-200 py-1.5 px-3">
                 <span className="text-sm font-bold text-slate-500 hidden sm:block">Price:</span>
                 <input 
