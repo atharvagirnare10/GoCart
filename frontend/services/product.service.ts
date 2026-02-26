@@ -11,13 +11,15 @@ export interface Product {
   description?: string;
 }
 
-// ✅ Updated: Added 'random' parameter to support shuffling
+// ✅ Updated: Added 'minPrice' and 'maxPrice' for price filtering
 export async function getProducts(
   category: string = "All", 
   page: number = 1, 
   limit: number = 20, 
   search: string = "",
-  random: boolean = false // 🆕 New Parameter
+  random: boolean = false, // 🆕 New Parameter
+  minPrice?: string | null, // ✅ Price Filter parameter
+  maxPrice?: string | null  // ✅ Price Filter parameter
 ) {
   try {
     const params = new URLSearchParams();
@@ -34,6 +36,14 @@ export async function getProducts(
     // ✅ Random Logic: Agar random true hai to backend ko batao
     if (random) {
       params.append("random", "true");
+    }
+
+    // ✅ Price Logic: Agar price limits hain to backend ko bhejo
+    if (minPrice) {
+      params.append("minPrice", minPrice);
+    }
+    if (maxPrice) {
+      params.append("maxPrice", maxPrice);
     }
     
     params.append("page", page.toString());
@@ -74,5 +84,17 @@ export async function getRelatedProducts(id: string | number) {
   } catch (error) {
     console.error(`Error fetching related products for ${id}:`, error);
     return []; // Empty array return karo taaki UI crash na ho
+  }
+}
+
+// ✅ NEW FUNCTION: Fetch Search Suggestions (Autocomplete ke liye)
+export async function fetchSearchSuggestions(query: string) {
+  if (!query) return [];
+  try {
+    // Ye backend ke naye route (/products/suggestions) ko call karega
+    return await apiFetch(`/products/suggestions?q=${encodeURIComponent(query)}`);
+  } catch (error) {
+    console.error("Error fetching search suggestions:", error);
+    return [];
   }
 }
