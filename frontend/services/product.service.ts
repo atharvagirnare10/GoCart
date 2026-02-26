@@ -1,78 +1,53 @@
-import { apiFetch } from "./api";
+// ==========================================
+// CONFIGURATION (SMART SWITCH)
+// ==========================================
 
-export interface Product {
-  id: number;
-  title: string;
-  price: string;
-  img_url: string;
-  category_name: string;
-  stars: string;
-  reviews: number;
-  description?: string;
-}
+// 1. Localhost URL (Jab tu laptop pe develop karega)
+const LOCAL_URL = "http://127.0.0.1:5000/api";
 
-// ✅ Updated: Added 'random' parameter to support shuffling
-export async function getProducts(
-  category: string = "All", 
-  page: number = 1, 
-  limit: number = 20, 
-  search: string = "",
-  random: boolean = false // 🆕 New Parameter
-) {
+// 2. Production URL (Tera Render wala backend)
+const PROD_URL = "https://gocart-6iyu.onrender.com/api";
+
+// ✅ AUTO-DETECTION: 
+// Agar app Vercel pe hai toh PROD use karega, 
+// Agar laptop pe 'npm run dev' chal raha hai toh LOCAL use karega.
+const BASE_URL = 
+  process.env.NEXT_PUBLIC_API_URL || 
+  (process.env.NODE_ENV === "development" ? LOCAL_URL : PROD_URL);
+
+console.log(`🚀 API Running on: ${process.env.NODE_ENV === "development" ? "Local" : "Production"} | URL: ${BASE_URL}`);
+
+/**
+ * Common API fetch wrapper
+ */
+export async function apiFetch(endpoint: string, options: RequestInit = {}) {
+  // Token ko safe tarike se fetch karna
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
   try {
-    const params = new URLSearchParams();
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
+      ...options,
+      // ✅ CORS aur Cookies ke liye important (Auth ke liye zaroori hai)
+      credentials: "include", 
+      
+      headers: {
+        "Content-Type": "application/json",
+        // ✅ Ngrok warning hatane ke liye (Future proofing)
+        "ngrok-skip-browser-warning": "true",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
+      },
+    });
 
-    if (category && category !== "All") {
-      params.append("category", category);
+    // Error Handling
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.error || `API Error: ${res.status}`);
     }
-    
-    // --- Search Logic ---
-    if (search && search.trim() !== "") {
-      params.append("search", search);
-    }
 
-    // ✅ Random Logic: Agar random true hai to backend ko batao
-    if (random) {
-      params.append("random", "true");
-    }
-    
-    params.append("page", page.toString());
-    params.append("limit", limit.toString());
-
-    // Backend return karega: { products: [], pagination: {} }
-    return await apiFetch(`/products?${params.toString()}`);
+    return await res.json();
   } catch (error) {
-    console.error("Error fetching products:", error);
-    // Crash bachane ke liye safe default return
-    return { products: [], pagination: { totalPages: 1, currentPage: 1 } };
-  }
-}
-
-export async function getCategories() {
-  try {
-    return await apiFetch("/products/categories");
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    return [];
-  }
-}
-
-export async function getProductById(id: string | number) {
-  try {
-    return await apiFetch(`/products/${id}`);
-  } catch (error) {
-    console.error(`Error fetching product ${id}:`, error);
+    console.error("❌ Fetch Error:", error);
     throw error;
-  }
-}
-
-// ✅ NEW FUNCTION: Fetch Related Products
-export async function getRelatedProducts(id: string | number) {
-  try {
-    // Ye route backend mein humne abhi banaya hai: /api/products/:id/related
-    return await apiFetch(`/products/${id}/related`);
-  } catch (error) {
-    console.error(`Error fetching related products for ${id}:`, error);
-    return []; // Empty array return karo taaki UI crash na ho
   }
 }
