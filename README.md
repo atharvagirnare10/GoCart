@@ -7,7 +7,7 @@ GoCart is a high-performance, full-stack e-commerce platform built with the **PE
 
 ## 🔗 Project Links
 * **Live Deployment:** [GoCart](https://gocart01.vercel.app)
-* **Backend API:** Hosted via Ngrok/Cloud for testing.
+* **Backend API:** Hosted via Ngrok/Cloud for testing
 
 ---
 
