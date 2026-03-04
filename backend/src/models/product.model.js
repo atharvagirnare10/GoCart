@@ -90,7 +90,7 @@ export const getAllCategories = async () => {
 };
 
 // Related Products logic
-export const getRelatedProductsModel = async (id, limit = 4) => {
+export const getRelatedProductsModel = async (id, limit = 10) => {
   const query = `
     SELECT * FROM products 
     WHERE category_name = (SELECT category_name FROM products WHERE id = $1) 
