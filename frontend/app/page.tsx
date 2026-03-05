@@ -104,6 +104,37 @@ function HomeContent() {
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
 
+  // ✅ COMMON SCROLL FUNCTION ADDED HERE
+  const scrollToGrid = () => {
+    setTimeout(() => {
+      const productSection = document.getElementById('product-grid-start');
+      if (productSection) {
+        const yOffset = -80; 
+        const y = productSection.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
+  const isMounted = useRef(false);
+
+  // ✅ NAVBAR SEARCH SUGGESTION YA CATEGORY CLICK HONE PE SCROLL
+  useEffect(() => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      // Agar pehli baar page load hua hai aur usme pehle se search hai toh scroll karega
+      if (searchQuery) {
+        scrollToGrid();
+      }
+      return;
+    }
+    
+    // Jab bhi URL mein category ya search change hoga (jaise Navbar se), tab ye automatically scroll karega
+    scrollToGrid();
+  }, [searchQuery, selectedCategory]);
+
   const updateFilters = (cat: string, newPage: number, min?: string, max?: string) => {
     const params = new URLSearchParams();
     if (cat !== "All") params.append("category", cat);
@@ -121,31 +152,24 @@ function HomeContent() {
 
   const handleCategoryChange = (cat: string) => {
     updateFilters(cat, 1);
+    scrollToGrid(); // ✅ Scroll applied here
   };
 
   const handlePageChange = (newPage: number) => {
     updateFilters(selectedCategory, newPage);
-    
-    setTimeout(() => {
-      const productSection = document.getElementById('product-grid-start');
-      if (productSection) {
-        const yOffset = -80; 
-        const y = productSection.getBoundingClientRect().top + window.scrollY + yOffset;
-        window.scrollTo({ top: y, behavior: 'smooth' });
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }, 100);
+    scrollToGrid(); // ✅ Replaced inline logic with the common function
   };
 
   const applyPriceFilter = () => {
     updateFilters(selectedCategory, 1, minPriceInput, maxPriceInput);
+    scrollToGrid(); // ✅ Scroll applied here
   };
   
   const clearPriceFilter = () => {
     setMinPriceInput("");
     setMaxPriceInput("");
     updateFilters(selectedCategory, 1, "", "");
+    scrollToGrid(); // ✅ Scroll applied here
   };
 
   const applyPreset = (min: string, max: string) => {
@@ -153,6 +177,7 @@ function HomeContent() {
     setMaxPriceInput(max);
     updateFilters(selectedCategory, 1, min, max);
     setIsPriceDropdownOpen(false);
+    scrollToGrid(); // ✅ Scroll applied here
   };
 
   return (
