@@ -102,14 +102,27 @@ export const getRelatedProductsModel = async (id, limit = 10) => {
   return rows;
 };
 
-// ✅ NEW: Search Suggestions Logic (Gets 5 matching product names & images)
+// ✅ NEW: Search Suggestions Logic (Gets matching Categories & Products)
 export const getSearchSuggestionsModel = async (search) => {
-  const query = `
+  // 1. Search for matching categories
+  const categoryQuery = `
+    SELECT category_name 
+    FROM products 
+    WHERE category_name ILIKE $1 
+    GROUP BY category_name 
+    LIMIT 3
+  `;
+  const { rows: categories } = await pool.query(categoryQuery, [`%${search}%`]);
+
+  // 2. Search for matching products
+  const productQuery = `
     SELECT id, title, img_url, price 
     FROM products 
-    WHERE title ILIKE $1 
+    WHERE title ILIKE $1 OR description ILIKE $1
     LIMIT 5
   `;
-  const { rows } = await pool.query(query, [`%${search}%`]);
-  return rows;
+  const { rows: products } = await pool.query(productQuery, [`%${search}%`]);
+
+  // Dono ko ek object me return karo
+  return { categories, products };
 };
