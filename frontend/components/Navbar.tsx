@@ -2,22 +2,22 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useRef } from "react"; // ✅ useRef add kiya
-import { ShoppingBag, Search, ShoppingCart, User, LogOut, Heart, Menu } from "lucide-react"; 
+import { useEffect, useState, useRef } from "react"; 
+import { ShoppingBag, Search, ShoppingCart, User, LogOut, Heart, Menu, X, ArrowRight, Sparkles } from "lucide-react"; 
 import { getCart } from "@/services/cart.service";
-import { fetchSearchSuggestions } from "@/services/product.service"; // ✅ Import kiya
+import { fetchSearchSuggestions } from "@/services/product.service"; 
 
 export default function Navbar() {
   // ---------------------------------------------------------
-  // ✅ LOGIC SECTION (Unchanged)
+  // ✅ LOGIC SECTION (Unchanged Core Logic)
   // ---------------------------------------------------------
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [cartCount, setCartCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // ✅ NEW States for Suggestions
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  // ✅ NEW States for Suggestions (Categories + Products Object)
+  const [suggestions, setSuggestions] = useState<any>({ categories: [], products: [] });
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchRef = useRef<HTMLFormElement>(null);
 
@@ -35,16 +35,17 @@ export default function Navbar() {
     }
   }, []);
 
-  // ✅ NEW: Fetch Suggestions jab type kare (Debounce ke sath)
+  // ✅ Fetch Suggestions jab type kare (Debounce ke sath)
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm.trim().length >= 2) {
-        fetchSearchSuggestions(searchTerm).then(data => {
+        fetchSearchSuggestions(searchTerm).then((data: any) => {
+          // Backend ab { categories: [...], products: [...] } return kar raha hai
           setSuggestions(data);
           setShowSuggestions(true);
         });
       } else {
-        setSuggestions([]);
+        setSuggestions({ categories: [], products: [] });
         setShowSuggestions(false);
       }
     }, 300); // 300ms delay taaki har letter type karne pe API call na ho
@@ -52,7 +53,7 @@ export default function Navbar() {
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
 
-  // ✅ NEW: Bahar click karne par dropdown band ho jaye
+  // ✅ Bahar click karne par dropdown band ho jaye
   useEffect(() => {
     function handleClickOutside(event: any) {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -74,22 +75,22 @@ export default function Navbar() {
     e.preventDefault();
     setShowSuggestions(false); // ✅ Search pe click karne k baad dropdown band
     if (searchTerm.trim()) {
-      router.push(`/?search=${encodeURIComponent(searchTerm)}`);
+      router.push(`/?search=${encodeURIComponent(searchTerm.trim())}`);
     } else {
       router.push(`/`);
     }
   };
 
   // ---------------------------------------------------------
-  // ✅ UI SECTION (Stylish Update)
+  // ✅ UI SECTION (Original Navbar + Premium Search Bar)
   // ---------------------------------------------------------
   return (
-    // ✨ Glassmorphism Container with Soft Shadow
+    // ✨ Glassmorphism Container with Soft Shadow (Original Style)
     <nav className="fixed top-0 left-0 right-0 z-50 bg-purple-50/80 backdrop-blur-md border-b border-indigo-100/50 transition-all duration-300 shadow-sm shadow-indigo-100/20">
       <div className="max-w-[1500px] mx-auto px-6 h-20 flex items-center justify-between">
         
-        {/* 1. BRANDING & LOGO */}
-        <div className="flex items-center gap-12">
+        {/* 1. BRANDING & LOGO (Original) */}
+        <div className="flex items-center gap-12 shrink-0">
           <Link href="/" className="flex items-center gap-2.5 group cursor-pointer">
             {/* Logo Icon with Gradient & Rotation */}
             <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-indigo-900 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 group-hover:rotate-6 transition-transform duration-300">
@@ -120,49 +121,97 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* 2. SEARCH BAR (Modern Floating Input + Dropdown) */}
-        {/* ✅ form me ref add kiya */}
-        <form ref={searchRef} onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-8 transition-all duration-300 relative">
-          <div className="relative w-full group">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
-              <Search size={18} className="text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
-            </div>
+        {/* 2. ✅ NEW PREMIUM SEARCH BAR (Minimalist & Sleek) */}
+        <form ref={searchRef} onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-2xl mx-8 relative z-50 group">
+          <div className="relative w-full flex items-center bg-white/60 hover:bg-white border border-indigo-100 focus-within:bg-white focus-within:border-indigo-300 focus-within:ring-4 focus-within:ring-indigo-500/10 rounded-full transition-all duration-300 px-2 py-1.5 shadow-sm hover:shadow-md">
+            
+            <Search size={18} className="text-slate-400 ml-3 shrink-0 group-focus-within:text-indigo-500 transition-colors" />
+            
             <input 
               type="text"
-              placeholder="Search products..."
-              className="w-full pl-11 pr-4 py-2.5 rounded-full bg-white/60 border border-indigo-100 focus:bg-white focus:border-indigo-300 focus:ring-4 focus:ring-indigo-500/10 outline-none text-sm font-medium transition-all shadow-sm hover:shadow-md placeholder:text-slate-400/80 text-slate-700 relative z-10"
+              placeholder="Search products, brands and more..."
+              className="flex-1 bg-transparent border-none outline-none px-4 py-2 text-sm font-semibold text-slate-800 placeholder:text-slate-400/80"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              onFocus={() => { if(suggestions.length > 0) setShowSuggestions(true) }} // ✅ Wapas focus karne par show hoga
+              onFocus={() => { if((suggestions.categories?.length > 0) || (suggestions.products?.length > 0)) setShowSuggestions(true) }}
             />
 
-            {/* ✅ NEW: Suggestions Dropdown Box */}
-            {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-xl shadow-indigo-100/50 border border-indigo-50 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-                {suggestions.map((item) => (
-                  <Link 
-                    key={item.id} 
-                    href={`/product/${item.id}`}
-                    onClick={() => {
-                        setShowSuggestions(false);
-                        setSearchTerm(""); // Optionally clear search term after selecting
-                    }}
-                    className="flex items-center gap-4 px-4 py-3 hover:bg-slate-50 border-b border-slate-50 last:border-0 transition-colors cursor-pointer"
-                  >
-                    <img src={item.img_url} alt={item.title} className="w-10 h-10 rounded-lg object-contain bg-slate-100" />
-                    <div>
-                      <h4 className="text-sm font-bold text-slate-800 line-clamp-1">{item.title}</h4>
-                      <p className="text-xs text-indigo-600 font-bold mt-0.5">₹{item.price}</p>
+            {/* Clear Button */}
+            {searchTerm && (
+              <button type="button" onClick={() => setSearchTerm("")} className="mr-2 p-1.5 text-slate-400 hover:text-rose-500 transition-colors rounded-full hover:bg-rose-50">
+                <X size={16} className="stroke-[2.5]" />
+              </button>
+            )}
+
+            {/* Stylish Submit Button Inside Input */}
+            <button type="submit" className="bg-gradient-to-r from-slate-900 to-indigo-900 text-white p-2 rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all">
+              <ArrowRight size={18} className="stroke-[2.5]" />
+            </button>
+            
+            {/* ✅ PREMIUM SUGGESTIONS DROPDOWN */}
+            {showSuggestions && (suggestions.categories?.length > 0 || suggestions.products?.length > 0) && (
+              <div className="absolute top-[120%] left-0 right-0 bg-white/95 backdrop-blur-xl rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-indigo-50 overflow-hidden z-[100] animate-in fade-in slide-in-from-top-4">
+                
+                {/* --- CATEGORIES SECTION (Modern Tags) --- */}
+                {suggestions.categories?.length > 0 && (
+                  <div className="p-4 border-b border-indigo-50 bg-slate-50/50">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
+                      <Sparkles size={12} className="text-amber-500" /> Suggested Categories
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {suggestions.categories.map((cat: any, idx: number) => (
+                        <button 
+                          key={idx}
+                          type="button"
+                          onClick={() => { 
+                            setSearchTerm("");
+                            setShowSuggestions(false); 
+                            router.push(`/?category=${encodeURIComponent(cat.category_name)}`);
+                          }}
+                          className="px-4 py-2 bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-sm hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-all font-bold text-slate-600 text-[13px] flex items-center gap-2"
+                        >
+                          {cat.category_name}
+                        </button>
+                      ))}
                     </div>
-                  </Link>
-                ))}
+                  </div>
+                )}
+
+                {/* --- PRODUCTS SECTION --- */}
+                {suggestions.products?.length > 0 && (
+                  <div className="p-3">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2 px-3 pt-2">Products</p>
+                    <div className="flex flex-col gap-1">
+                      {suggestions.products.map((item: any) => (
+                        <Link 
+                          key={item.id} 
+                          href={`/product/${item.id}`}
+                          onClick={() => { 
+                              setShowSuggestions(false); 
+                              setSearchTerm(""); 
+                          }}
+                          className="flex items-center gap-4 px-3 py-3 hover:bg-indigo-50/50 rounded-2xl transition-all cursor-pointer group border border-transparent hover:border-indigo-50"
+                        >
+                          <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 p-1.5 shrink-0 flex items-center justify-center overflow-hidden shadow-sm group-hover:scale-105 transition-transform duration-300">
+                            <img src={item.img_url} alt={item.title} className="w-full h-full object-contain mix-blend-multiply" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-[14px] font-bold text-slate-800 line-clamp-1 group-hover:text-indigo-600 transition-colors">{item.title}</h4>
+                            <p className="text-[13px] text-indigo-600 font-bold mt-0.5">₹{item.price}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
               </div>
             )}
           </div>
         </form>
 
-        {/* 3. ACTIONS & PROFILE */}
-        <div className="flex items-center gap-5">
+        {/* 3. ACTIONS & PROFILE (Original) */}
+        <div className="flex items-center gap-5 shrink-0">
           
           <div className="flex items-center gap-1">
             {/* Wishlist Icon */}
